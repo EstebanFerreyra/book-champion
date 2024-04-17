@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 const Books = ({ books }) => {
   return (
     <div className="books-container">
-      {books.map((book, index) => (
+      {books.length > 0 ? (books.map((book, index) => (
         <BookItem
           key={index}
           title={book.bookTitle}
@@ -14,7 +14,9 @@ const Books = ({ books }) => {
           rating={book.bookRating}
           imageUrl={book.imageUrl}
         />
-      ))}
+      ))) : (
+        <p>NO HAY NADA PARA MOSTRAR</p>
+      )}
     </div>
   );
 };

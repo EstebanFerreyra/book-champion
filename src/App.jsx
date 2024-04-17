@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Books from "./components/books/Books";
 import NewBook from "./components/newBook/NewBook";
+import BookSearch from "./components/bookSearch/BookSearch";
 
 const BOOKS = [
   {
@@ -41,6 +42,7 @@ function App() {
   const [books, setBooks] = useState(BOOKS);
   
   const saveBookDataHandler = (enteredBookData) => {
+    
     const bookData = {
       ...enteredBookData,
       id: Math.random().toString(),
@@ -48,10 +50,20 @@ function App() {
     setBooks((prev) => [...prev, bookData]);
   };
 
+  const searchHandler = (searchTerm) => {
+    const filteredBooks = BOOKS.filter(
+      (book) =>
+        book.bookTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        book.bookAuthor.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setBooks(filteredBooks);
+  };
+
   return (
     <div>
       <h2>Books Champion App</h2>
       <h3>¡Quiero leer libros!</h3>
+      <BookSearch onSearch={searchHandler} />
       <NewBook onBookDataSaved={saveBookDataHandler} />
       <Books books={books} />
     </div>

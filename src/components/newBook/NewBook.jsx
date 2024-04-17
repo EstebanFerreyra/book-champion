@@ -8,7 +8,7 @@ const NewBook = ({ onBookDataSaved }) => {
   const [enteredRating, setEnteredRating] = useState("");
   const [enteredPageCount, setEnteredPageCount] = useState("");
   const [enteredImageUrl, setEnteredImageUrl] = useState("");
-
+  
   const [showForm, setShowForm] = useState(false);
 
   const handleChangeTitle = (e) => {
