@@ -1,15 +1,23 @@
 import "./BookItem.css";
 import PropTypes from "prop-types";
-import { useState } from "react";
 import { Card, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
-const BookItem = ({ title, author, pageCount, rating, imageUrl }) => {
-
-  const [newTitle, setNewTitle] = useState(title);
+const BookItem = ({ title, author, pageCount, rating, imageUrl, id }) => {
+  const navigate = useNavigate();
 
   const handleClick = () => {
-    setNewTitle("Aglo")
-  }
+    navigate(`/book/${id}`, {
+      state: {
+        book: {
+          title,
+          author,
+          pageCount,
+          imageUrl,
+        },
+      },
+    });
+  };
 
   return (
     <div>
@@ -20,12 +28,12 @@ const BookItem = ({ title, author, pageCount, rating, imageUrl }) => {
           src={imageUrl !== "" ? imageUrl : "https://bit.ly/47NylZk"}
         />
         <Card.Body>
-          <Card.Title>{newTitle}</Card.Title>
+          <Card.Title>{title}</Card.Title>
           <Card.Subtitle>{author}</Card.Subtitle>
           <div>{rating?.length} estrellas</div>
           <p>{pageCount} páginas</p>
           <Button className="btn btn-warning" onClick={handleClick}>
-            Actulizar titulo
+            Ver detalle
           </Button>
         </Card.Body>
       </Card>
@@ -39,6 +47,7 @@ BookItem.propTypes = {
   pageCount: PropTypes.number,
   rating: PropTypes.array,
   imageUrl: PropTypes.string,
+  id: PropTypes.number,
 };
 
 export default BookItem;

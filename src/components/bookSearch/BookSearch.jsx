@@ -7,11 +7,11 @@ import Row from "react-bootstrap/Row";
 
 const BookSearch = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [showSearch, setShowSearch] = useState(true);
+  const [showSearch, setShowSearch] = useState(false);
 
   const handleClick = () => {
     setShowSearch(!showSearch);
-  }
+  };
 
   const handleSearch = () => {
     onSearch(searchTerm);
@@ -19,28 +19,29 @@ const BookSearch = ({ onSearch }) => {
 
   return (
     <>
-      <Button onClick={handleClick}>
-        {showSearch ? "Esconder" : "Mostrar"}
+      <Button onClick={handleClick} style={{margin: 2}}>
+        {showSearch ? "Esconder" : "Filtrar"}
       </Button>
-      { showSearch && 
-      <Row className="justify-content-center">
-        <Col md={6} lg={4}>
-          <Form>
-            <Form.Group controlId="formBasicSearch">
-              <Form.Control
-                type="text"
-                placeholder="Buscar libro por nombre"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </Form.Group>
-            <Button variant="primary" onClick={handleSearch}>
-              Buscar
-            </Button>
-          </Form>
-        </Col>
-      </Row>
-};
+      {showSearch && (
+        <Row className="justify-content-center">
+          <Col md={6} lg={4}>
+            <Form>
+              <Form.Group controlId="formBasicSearch">
+                <Form.Control
+                  type="text"
+                  placeholder="Buscar libro por nombre"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </Form.Group>
+              <Button variant="primary" onClick={handleSearch}>
+                Buscar
+              </Button>
+            </Form>
+          </Col>
+        </Row>
+      )}
+      
     </>
   );
 };

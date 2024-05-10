@@ -1,73 +1,57 @@
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import Dashboard from "./components/dashboard/Dashboard";
+import Login from "./components/login/Login";
 import { useState } from "react";
-import Books from "./components/books/Books";
-import NewBook from "./components/newBook/NewBook";
-import BookSearch from "./components/bookSearch/BookSearch";
+import Protected from "./components/routes/protected/Protected";
+import BookDetails from "./components/bookDetails/BookDetails";
+import NotFound from "./components/notFound/NotFound";
+import MainLayout from "./components/layout/MainLayout";
 
-const BOOKS = [
-  {
-    bookTitle: "100 años de soledad",
-    bookAuthor: "Gabriel García Marquez",
-    bookRating: Array(5).fill("*"),
-    pageCount: 410,
-    imageUrl:
-      "https://images.cdn3.buscalibre.com/fit-in/360x360/61/8d/618d227e8967274cd9589a549adff52d.jpg",
-  },
-  {
-    bookTitle: "Asesinato en el Orient Express",
-    bookAuthor: "Agatha Christie",
-    bookRating: Array(4).fill("*"),
-    pageCount: 256,
-    imageUrl:
-      "https://m.media-amazon.com/images/I/71RFyM95qwL._AC_UF1000,1000_QL80_.jpg",
-  },
-  {
-    bookTitle: "Las dos torres",
-    bookAuthor: "J.R.R Tolkien",
-    bookRating: Array(5).fill("*"),
-    pageCount: 352,
-    imageUrl:
-      "https://m.media-amazon.com/images/I/A1y0jd28riL._AC_UF1000,1000_QL80_.jpg",
-  },
-  {
-    bookTitle: "50 sombras de Grey",
-    bookAuthor: "E.L James",
-    bookRating: Array(1).fill("*"),
-    pageCount: 514,
-    imageUrl:
-      "https://prodimage.images-bn.com/pimages/9781728260839_p0_v2_s1200x630.jpg",
-  },
-];
+const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-function App() {
-  const [books, setBooks] = useState(BOOKS);
-  
-  const saveBookDataHandler = (enteredBookData) => {
-    
-    const bookData = {
-      ...enteredBookData,
-      id: Math.random().toString(),
-    };
-    setBooks((prev) => [...prev, bookData]);
+  const loginHandler = () => {
+    setIsLoggedIn(true);
   };
 
-  const searchHandler = (searchTerm) => {
-    const filteredBooks = BOOKS.filter(
-      (book) =>
-        book.bookTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        book.bookAuthor.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setBooks(filteredBooks);
+  const logOutHandler = () => {
+    setIsLoggedIn(false);
   };
+
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: (
+        <Protected isSignedIn={isLoggedIn}>
+          <MainLayout>
+            <Dashboard onLogOff={logOutHandler} />
+          </MainLayout>
+        </Protected>
+      ),
+    },
+    {
+      path: "/login",
+      element: (
+        <MainLayout>
+          <Login onLogin={loginHandler} />
+        </MainLayout>
+      ),
+    },
+    {
+      path: "book/:id",
+      element: <BookDetails />,
+    },
+    {
+      path: "*",
+      element: <NotFound />,
+    },
+  ]);
 
   return (
-    <div>
-      <h2>Books Champion App</h2>
-      <h3>¡Quiero leer libros!</h3>
-      <BookSearch onSearch={searchHandler} />
-      <NewBook onBookDataSaved={saveBookDataHandler} />
-      <Books books={books} />
+    <div className="d-flex flex-column align-items-center">
+      {<RouterProvider router={router} />}
     </div>
   );
-}
+};
 
 export default App;
