@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { Alert, Button, Card, Form, FormGroup } from "react-bootstrap";
-import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import { AuthenticationContext } from "../../services/authentication/authentication.context";
 
-const Login = ({ onLogin }) => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,6 +17,8 @@ const Login = ({ onLogin }) => {
   const passwordRef = useRef(null);
 
   const navigate = useNavigate();
+
+  const { handleLogin } = useContext(AuthenticationContext);
 
   const changeEmailHandler = (event) => {
     setErrors({ ...errors, email: false });
@@ -43,17 +45,9 @@ const Login = ({ onLogin }) => {
       return;
     }
 
-    if (email !== "Neri" || password !== "esteban03") {
-      setEmail("");
-      setPassword("");
-      emailRef.current.focus();
-      setErrors({ ...errors, exist: true });
-      return;
-    }
-
     setErrors({ ...errors, exist: false });
 
-    onLogin();
+    handleLogin(email);
     navigate("/");
   };
 
@@ -109,10 +103,6 @@ const Login = ({ onLogin }) => {
       </Card>
     </div>
   );
-};
-
-Login.propTypes = {
-  onLogin: PropTypes.func,
 };
 
 export default Login;

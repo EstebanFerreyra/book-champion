@@ -8,7 +8,7 @@ const NewBook = ({ onBookDataSaved }) => {
   const [enteredRating, setEnteredRating] = useState("");
   const [enteredPageCount, setEnteredPageCount] = useState("");
   const [enteredImageUrl, setEnteredImageUrl] = useState("");
-  
+
   const [showForm, setShowForm] = useState(false);
 
   const handleChangeTitle = (e) => {
@@ -33,18 +33,16 @@ const NewBook = ({ onBookDataSaved }) => {
 
   const submitBookHandler = (event) => {
     event.preventDefault();
-    const bookData = {
+    const bookDto = {
+      id: 0, 
       bookTitle: enteredTitle,
       bookAuthor: enteredAuthor,
-      bookRating:
-        enteredRating !== ""
-          ? Array(parseInt(enteredRating, 10)).fill("*")
-          : Array(0),
+      bookRating: enteredRating !== "" ? parseInt(enteredRating, 10) : 0, 
       pageCount: parseInt(enteredPageCount, 10),
       imageUrl: enteredImageUrl,
     };
 
-    onBookDataSaved(bookData);
+    onBookDataSaved(bookDto);
     setEnteredTitle("");
     setEnteredAuthor("");
     setEnteredRating("");
@@ -54,7 +52,7 @@ const NewBook = ({ onBookDataSaved }) => {
 
   const handleClick = () => {
     setShowForm(!showForm);
-  }
+  };
 
   return (
     <>
@@ -141,7 +139,6 @@ const NewBook = ({ onBookDataSaved }) => {
     </>
   );
 };
-
 
 NewBook.propTypes = {
   onBookDataSaved: PropTypes.func.isRequired,

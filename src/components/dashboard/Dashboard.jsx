@@ -1,64 +1,63 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import BookSearch from "../bookSearch/BookSearch";
 import NewBook from "../newBook/NewBook";
 import Books from "../books/Books";
-import PropTypes from "prop-types";
-import { Button } from "react-bootstrap";
+import { AuthenticationContext } from "../../services/authentication/authentication.context";
 
-const BOOKS = [
-  {
-    id: 1,
-    bookTitle: "100 años de soledad",
-    bookAuthor: "Gabriel García Marquez",
-    bookRating: Array(5).fill("*"),
-    pageCount: 410,
-    imageUrl:
-      "https://images.cdn3.buscalibre.com/fit-in/360x360/61/8d/618d227e8967274cd9589a549adff52d.jpg",
-  },
-  {
-    id: 2,
-    bookTitle: "Asesinato en el Orient Express",
-    bookAuthor: "Agatha Christie",
-    bookRating: Array(4).fill("*"),
-    pageCount: 256,
-    imageUrl:
-      "https://m.media-amazon.com/images/I/71RFyM95qwL._AC_UF1000,1000_QL80_.jpg",
-  },
-  {
-    id: 3,
-    bookTitle: "Las dos torres",
-    bookAuthor: "J.R.R Tolkien",
-    bookRating: Array(5).fill("*"),
-    pageCount: 352,
-    imageUrl:
-      "https://m.media-amazon.com/images/I/A1y0jd28riL._AC_UF1000,1000_QL80_.jpg",
-  },
-  {
-    id: 4,
-    bookTitle: "50 sombras de Grey",
-    bookAuthor: "E.L James",
-    bookRating: Array(1).fill("*"),
-    pageCount: 514,
-    imageUrl:
-      "https://prodimage.images-bn.com/pimages/9781728260839_p0_v2_s1200x630.jpg",
-  },
-];
+const Dashboard = () => {
+  const [books, setBooks] = useState([]);
 
-const Dashboard = ({ onLogOff }) => {
-  const [books, setBooks] = useState(BOOKS);
-  const [flag, setFlag] = useState(false);
+  const { handleLogout, user } = useContext(AuthenticationContext);
 
   useEffect(() => {
-    console.log("Estoy useeffect");
-    flag ? console.log("True") : console.log("Flase");
+    fetch("https://localhost:7248/api/Books/GetAll", {
+      method: "GET",
+      mode: "cors",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Error al obtener los libros");
+        }
+        return response.json();
+      })
+      .then((booksData) => {
+        setBooks(booksData);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }, []);
 
-  const saveBookDataHandler = (enteredBookData) => {
-    const bookData = {
-      ...enteredBookData,
-      id: Math.random().toString(),
+  const saveBookDataHandler = async (enteredBookData) => {
+    const bookDto = {
+      ImageUrl: enteredBookData.imageUrl,
+      BookRating: enteredBookData.bookRating,
+      BookAuthor: enteredBookData.bookAuthor,
+      BookTitle: enteredBookData.bookTitle,
+      // BookRating: parseInt(enteredBookData.bookRating),
+      PageCount: enteredBookData.pageCount,
+      id: 0,
     };
-    setBooks((prev) => [...prev, bookData]);
+
+    try {
+      const response = await fetch("https://localhost:7248/api/Books/AddBook", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookDto),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add book.");
+      }
+
+      const data = await response.json();
+      setBooks(data);
+    } catch (error) {
+      console.error("Error adding book:", error.message);
+    }
   };
 
   const searchHandler = (searchTerm) => {
@@ -71,7 +70,7 @@ const Dashboard = ({ onLogOff }) => {
   };
 
   const onHandleClick = () => {
-    onLogOff();
+    handleLogout();
   };
 
   return (
@@ -80,17 +79,12 @@ const Dashboard = ({ onLogOff }) => {
         Cerrar sesión
       </button>
       <h2>Books Champion App</h2>
-      <h3>¡Quiero leer libros!</h3>
-      <Button onClick={() => setFlag(!flag)}>Recargar</Button>
+      <h3>¡Bienvenido {user.email}!</h3>
       <BookSearch onSearch={searchHandler} />
       <NewBook onBookDataSaved={saveBookDataHandler} />
       <Books books={books} />
     </div>
   );
-};
-
-Dashboard.propTypes = {
-  onLogOff: PropTypes.func,
 };
 
 export default Dashboard;
