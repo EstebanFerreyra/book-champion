@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BookSearch from "../bookSearch/BookSearch";
 import NewBook from "../newBook/NewBook";
 import Books from "../books/Books";
 import PropTypes from "prop-types";
+import { Button } from "react-bootstrap";
 
 const BOOKS = [
   {
@@ -43,8 +44,14 @@ const BOOKS = [
   },
 ];
 
-const Dashboard = ({onLogOff}) => {
+const Dashboard = ({ onLogOff }) => {
   const [books, setBooks] = useState(BOOKS);
+  const [flag, setFlag] = useState(false);
+
+  useEffect(() => {
+    console.log("Estoy useeffect");
+    flag ? console.log("True") : console.log("Flase");
+  }, []);
 
   const saveBookDataHandler = (enteredBookData) => {
     const bookData = {
@@ -65,13 +72,16 @@ const Dashboard = ({onLogOff}) => {
 
   const onHandleClick = () => {
     onLogOff();
-  }
+  };
 
   return (
-    <div>
+    <div className="container text-center">
+      <button className="btn btn-dark float-end mt-3" onClick={onHandleClick}>
+        Cerrar sesión
+      </button>
       <h2>Books Champion App</h2>
       <h3>¡Quiero leer libros!</h3>
-      <button onClick={onHandleClick}>Cerrar sesion</button>
+      <Button onClick={() => setFlag(!flag)}>Recargar</Button>
       <BookSearch onSearch={searchHandler} />
       <NewBook onBookDataSaved={saveBookDataHandler} />
       <Books books={books} />
@@ -80,7 +90,7 @@ const Dashboard = ({onLogOff}) => {
 };
 
 Dashboard.propTypes = {
-onLogOff: PropTypes.func,
+  onLogOff: PropTypes.func,
 };
 
 export default Dashboard;

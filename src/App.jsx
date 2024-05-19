@@ -5,7 +5,6 @@ import { useState } from "react";
 import Protected from "./components/routes/protected/Protected";
 import BookDetails from "./components/bookDetails/BookDetails";
 import NotFound from "./components/notFound/NotFound";
-import MainLayout from "./components/layout/MainLayout";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,18 +22,14 @@ const App = () => {
       path: "/",
       element: (
         <Protected isSignedIn={isLoggedIn}>
-          <MainLayout>
             <Dashboard onLogOff={logOutHandler} />
-          </MainLayout>
         </Protected>
       ),
     },
     {
       path: "/login",
       element: (
-        <MainLayout>
           <Login onLogin={loginHandler} />
-        </MainLayout>
       ),
     },
     {
