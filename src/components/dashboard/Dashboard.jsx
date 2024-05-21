@@ -39,6 +39,7 @@ const Dashboard = () => {
       id: 0,
     };
 
+
     try {
       const response = await fetch("https://localhost:7248/api/Books/AddBook", {
         method: "POST",
@@ -56,7 +57,7 @@ const Dashboard = () => {
       const data = await response.json();
       setBooks(data);
     } catch (error) {
-      console.error("Error adding book:", error.message);
+      alert(error);
     }
   };
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import PropTypes from "prop-types";
 
@@ -8,8 +8,17 @@ const NewBook = ({ onBookDataSaved }) => {
   const [enteredRating, setEnteredRating] = useState("");
   const [enteredPageCount, setEnteredPageCount] = useState("");
   const [enteredImageUrl, setEnteredImageUrl] = useState("");
-
+  const [formValid, setFormValid] = useState(false);
   const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    setFormValid(
+      enteredTitle !== "" &&
+        enteredAuthor !== "" &&
+        enteredPageCount !== "" &&
+        enteredRating !== ""
+    );
+  }, [enteredTitle, enteredAuthor, enteredPageCount, enteredRating]);
 
   const handleChangeTitle = (e) => {
     setEnteredTitle(e.target.value);
@@ -34,10 +43,10 @@ const NewBook = ({ onBookDataSaved }) => {
   const submitBookHandler = (event) => {
     event.preventDefault();
     const bookDto = {
-      id: 0, 
+      id: 0,
       bookTitle: enteredTitle,
       bookAuthor: enteredAuthor,
-      bookRating: enteredRating !== "" ? parseInt(enteredRating, 10) : 0, 
+      bookRating: enteredRating !== "" ? parseInt(enteredRating, 10) : 0,
       pageCount: parseInt(enteredPageCount, 10),
       imageUrl: enteredImageUrl,
     };
@@ -127,7 +136,7 @@ const NewBook = ({ onBookDataSaved }) => {
               </Row>
               <Row className="justify-content-end">
                 <Col md={3} className="d-flex justify-content-end">
-                  <Button variant="primary" type="submit">
+                  <Button variant="primary" type="submit" disabled={!formValid}>
                     Agregar lectura
                   </Button>
                 </Col>
